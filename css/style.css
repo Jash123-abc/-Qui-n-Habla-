@@ -1,0 +1,460 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+  color: #fff;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 10;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.teams-section {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 0;
+  gap: 20px;
+}
+
+.team {
+  text-align: center;
+  padding: 20px;
+  border-radius: 15px;
+  width: 45%;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.team:hover {
+  transform: translateY(-5px);
+}
+
+.team-men {
+  background: linear-gradient(135deg, #1a2980, #26d0ce);
+  box-shadow: 0 8px 20px rgba(26, 41, 128, 0.4);
+}
+
+.team-women {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  box-shadow: 0 8px 20px rgba(255, 65, 108, 0.4);
+}
+
+.team h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.points {
+  font-size: 4rem;
+  font-weight: bold;
+  margin: 15px 0;
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.team p {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.categories {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.categories h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #4facfe;
+}
+
+.category-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.category-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.category-btn.active {
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+.game-panel {
+  background: rgba(30, 30, 50, 0.7);
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.question-container {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  position: relative;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.category-tag {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  box-shadow: 0 3px 10px rgba(255, 94, 98, 0.3);
+}
+
+.question {
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.answer-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.visualizer {
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar {
+  position: absolute;
+  bottom: 0;
+  background: linear-gradient(to top, #00c6ff, #0072ff);
+  border-radius: 3px 3px 0 0;
+  transition: height 0.1s ease;
+}
+
+#pulse {
+  display: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff4b2b;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 1.5s infinite;
+  z-index: 5;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  min-width: 180px;
+}
+
+.btn-voice {
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: #000;
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+.btn-stop {
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  color: #000;
+  box-shadow: 0 5px 15px rgba(255, 94, 98, 0.4);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.status {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 15px 0;
+  min-height: 30px;
+  font-weight: 500;
+}
+
+.result {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 15px 0;
+  min-height: 40px;
+}
+
+.details {
+  text-align: center;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  min-height: 60px;
+}
+
+.winner-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.winner-banner.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.winner-content {
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+  transform: scale(0.8);
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  to {
+    transform: scale(1);
+  }
+}
+
+.winner-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #ffcc00;
+}
+
+.winner-team {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 20px 0;
+  text-transform: uppercase;
+}
+
+.winner-points {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+.point-animation {
+  position: fixed;
+  font-size: 2.5em;
+  font-weight: bold;
+  z-index: 100;
+  opacity: 1;
+  transition: all 0.5s ease-out;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes floatUp {
+  to {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(79, 172, 254, 0.5) 0%,
+    rgba(79, 172, 254, 0) 70%
+  );
+  animation: float 15s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(20px);
+  }
+  50% {
+    transform: translateY(0) translateX(40px);
+  }
+  75% {
+    transform: translateY(20px) translateX(20px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .teams-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .team {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .question {
+    font-size: 1.3rem;
+  }
+}
