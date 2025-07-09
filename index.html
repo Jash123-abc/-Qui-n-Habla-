@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Juego de Género por Voz - Responsive</title>
+    <title>Juego de Género por Voz - Ganador por Puntos</title>
     <style>
         /* Estilos base */
         * {
@@ -260,15 +260,22 @@
             margin: 12px 0;
             text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+        
+        /* Nuevos estilos para vidas */
         .lives-container {
             display: flex;
             justify-content: center;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 10px;
+            margin: 10px 0;
         }
         .life {
-            font-size: 1.3rem;
-            color: #e84676;
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            transition: all 0.3s ease;
+        }
+        .life.lost {
+            color: #555;
+            transform: scale(0.8);
         }
         
         /* Personajes con GIFs */
@@ -286,6 +293,68 @@
         }
         .character-women {
             background-image: url('img/mujer_maravilla2.gif');
+        }
+        
+        /* GIF de pérdida */
+        .lose-gif {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 10;
+            display: none;
+        }
+        .lose-gif-men {
+            background-image: url('https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif');
+        }
+        .lose-gif-women {
+            background-image: url('https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif');
+        }
+        
+        /* GIF de derrota completa */
+        .defeat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+        .defeat-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .defeat-content {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        .defeat-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+        .defeat-content p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+        .defeat-gif {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
         
         .categories {
@@ -548,9 +617,8 @@
             color: #b8bcc8;
             margin-top: 4px;
         }
-        /* Banners de ganador/perdedor */
-        .winner-banner,
-        .loser-banner {
+        /* Banners de ganador */
+        .winner-banner {
             position: fixed;
             top: 0;
             left: 0;
@@ -566,26 +634,22 @@
             transition: opacity 0.5s ease;
             padding: 20px;
         }
-        .winner-banner.show,
-        .loser-banner.show {
+        .winner-banner.show {
             opacity: 1;
             pointer-events: auto;
         }
-        .winner-content,
-        .loser-content {
+        .winner-content {
             text-align: center;
             color: #fff;
             padding: 20px;
             max-width: 500px;
             width: 100%;
         }
-        .winner-content h2,
-        .loser-content h2 {
+        .winner-content h2 {
             font-size: 1.8rem;
             margin-bottom: 15px;
         }
-        .winner-team,
-        .loser-team {
+        .winner-team {
             font-size: 1.3rem;
             margin-bottom: 10px;
         }
@@ -599,7 +663,7 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
         
-        /* Escenario pixel art */
+        /* Escenario pixel art en el fondo */
         .pixel-scene {
             position: fixed;
             bottom: 0;
@@ -783,12 +847,10 @@
             .accuracy-meter {
                 height: 12px;
             }
-            .winner-content h2,
-            .loser-content h2 {
+            .winner-content h2 {
                 font-size: 2rem;
             }
-            .winner-team,
-            .loser-team {
+            .winner-team {
                 font-size: 1.5rem;
             }
             .winner-points {
@@ -923,30 +985,43 @@
             <p>
                 🏆 El primero en responder correctamente suma un punto para su equipo.
             </p>
-            <p>💔 Respuesta incorrecta: -1 vida para tu equipo.</p>
+            <p>🏁 El primer equipo en llegar a 5 puntos gana la partida.</p>
             <p>💡 ¡Habla claro y rápido para ganar el punto!</p>
             <p>
                 🎯 <strong>Precisión:</strong> La detección de género funciona mejor
                 con voces claras y micrófonos de calidad.
+            </p>
+            <p>
+                ❤️ <strong>Vidas:</strong> Cada jugador tiene 3 vidas. ¡Responde bien para no perderlas!
             </p>
         </div>
 
         <div class="teams-section">
             <div class="team team-men">
                 <h2 id="playerMen">Hombres</h2>
-                <div class="character character-men"></div>
+                <div class="character character-men">
+                    <div class="lose-gif lose-gif-men" id="loseGifMen"></div>
+                </div>
+                <div class="lives-container" id="livesMen">
+                    <div class="life">❤️</div>
+                    <div class="life">❤️</div>
+                    <div class="life">❤️</div>
+                </div>
                 <div class="points" id="puntosHombre">0</div>
                 <p>Equipo Azul</p>
-                <div class="lives-container" id="menLives">
-                    </div>
             </div>
             <div class="team team-women">
                 <h2 id="playerWomen">Mujeres</h2>
-                <div class="character character-women"></div>
+                <div class="character character-women">
+                    <div class="lose-gif lose-gif-women" id="loseGifWomen"></div>
+                </div>
+                <div class="lives-container" id="livesWomen">
+                    <div class="life">❤️</div>
+                    <div class="life">❤️</div>
+                    <div class="life">❤️</div>
+                </div>
                 <div class="points" id="puntosMujer">0</div>
                 <p>Equipo Rosa</p>
-                <div class="lives-container" id="womenLives">
-                     </div>
             </div>
         </div>
 
@@ -1002,6 +1077,16 @@
         </div>
     </div>
 
+    <!-- Banner de derrota -->
+    <div class="defeat-overlay" id="defeatOverlay">
+        <div class="defeat-content">
+            <h2 id="defeatTitle">¡Equipo Derrotado!</h2>
+            <p id="defeatMessage">Lo siento, has perdido todas tus vidas</p>
+            <img class="defeat-gif" id="defeatGif" alt="GIF de derrota" />
+            <button class="btn btn-voice" id="defeatRestartBtn">Jugar de Nuevo</button>
+        </div>
+    </div>
+
     <div class="winner-banner" id="winnerBanner">
         <div class="winner-content">
             <h2>¡Tenemos un ganador!</h2>
@@ -1012,25 +1097,11 @@
             <div class="gif-animation">
                 <img
                     id="victoryGif"
-                    src="https://media.giphy.com/media/3o6Zt481isNVuQI1z6/giphy.gif"
+                    src="https://i.gifer.com/G16N.gif"
                     alt="Animación de victoria"
                 />
             </div>
             <button class="btn" id="restartBtn">Jugar de Nuevo</button>
-        </div>
-    </div>
-    <div class="loser-banner" id="loserBanner">
-        <div class="loser-content">
-            <h2>¡Equipo eliminado!</h2>
-            <div class="loser-team" id="loserTeam">Equipo Perdedor</div>
-            <div class="gif-animation">
-                <img
-                    id="defeatGif"
-                    src="https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif"
-                    alt="Animación de derrota"
-                />
-            </div>
-            <button class="btn" id="loserRestartBtn">Jugar de Nuevo</button>
         </div>
     </div>
 
@@ -1051,8 +1122,6 @@
             const categoryTag = document.getElementById("categoryTag");
             const menPointsDiv = document.getElementById("puntosHombre");
             const womenPointsDiv = document.getElementById("puntosMujer");
-            const menLivesDiv = document.getElementById("menLives");
-            const womenLivesDiv = document.getElementById("womenLives");
             const visualizer = document.getElementById("visualizer");
             const pulse = document.getElementById("pulse");
             const accuracyFill = document.getElementById("accuracyFill");
@@ -1063,14 +1132,24 @@
             const playerMenDiv = document.getElementById('playerMen');
             const playerWomenDiv = document.getElementById('playerWomen');
             
+            // Nuevos elementos para vidas
+            const livesMenDiv = document.getElementById('livesMen');
+            const livesWomenDiv = document.getElementById('livesWomen');
+            const loseGifMen = document.getElementById('loseGifMen');
+            const loseGifWomen = document.getElementById('loseGifWomen');
+            
+            // Elementos para derrota
+            const defeatOverlay = document.getElementById('defeatOverlay');
+            const defeatTitle = document.getElementById('defeatTitle');
+            const defeatMessage = document.getElementById('defeatMessage');
+            const defeatGif = document.getElementById('defeatGif');
+            const defeatRestartBtn = document.getElementById('defeatRestartBtn');
+            
             // Banners
             const winnerBanner = document.getElementById('winnerBanner');
             const winnerTeamDiv = document.getElementById('winnerTeam');
             const winnerPointsSpan = document.getElementById('winnerPoints');
             const restartBtn = document.getElementById('restartBtn');
-            const loserBanner = document.getElementById('loserBanner');
-            const loserTeamDiv = document.getElementById('loserTeam');
-            const loserRestartBtn = document.getElementById('loserRestartBtn');
             
             // Modal para nombres
             const nameModal = document.getElementById('nameModal');
@@ -1099,9 +1178,8 @@
             // --- ESTADO DEL JUEGO ---
             let puntosHombre = 0;
             let puntosMujer = 0;
-            const VIDAS_INICIALES = 3;
-            let vidasHombre = VIDAS_INICIALES;
-            let vidasMujer = VIDAS_INICIALES;
+            let vidasHombre = 3;
+            let vidasMujer = 3;
             let isRecording = false;
             let currentCategory = "general";
             let activeQuestion = null;
@@ -1156,26 +1234,87 @@
             const initGame = () => {
                 puntosHombre = 0;
                 puntosMujer = 0;
-                vidasHombre = VIDAS_INICIALES;
-                vidasMujer = VIDAS_INICIALES;
+                vidasHombre = 3;
+                vidasMujer = 3;
                 isRecording = false;
                 gameActive = true;
                 updateScoresUI();
+                updateLivesUI();
                 loadQuestion();
                 statusDiv.textContent = 'Selecciona una categoría y presiona "Iniciar Grabación".';
                 resultDiv.textContent = "";
                 detailsDiv.textContent = "";
                 answerDiv.textContent = "";
                 winnerBanner.classList.remove('show');
-                loserBanner.classList.remove('show');
+                defeatOverlay.classList.remove('show');
             };
 
             const updateScoresUI = () => {
                 menPointsDiv.textContent = puntosHombre;
                 womenPointsDiv.textContent = puntosMujer;
-
-                menLivesDiv.innerHTML = '❤️'.repeat(vidasHombre) + '🖤'.repeat(VIDAS_INICIALES - vidasHombre);
-                womenLivesDiv.innerHTML = '❤️'.repeat(vidasMujer) + '🖤'.repeat(VIDAS_INICIALES - vidasMujer);
+            };
+            
+            // Función para actualizar la visualización de vidas
+            const updateLivesUI = () => {
+                // Actualizar corazones para hombres
+                livesMenDiv.innerHTML = '';
+                for (let i = 0; i < vidasHombre; i++) {
+                    const life = document.createElement('div');
+                    life.className = 'life';
+                    life.textContent = '❤️';
+                    livesMenDiv.appendChild(life);
+                }
+                for (let i = vidasHombre; i < 3; i++) {
+                    const life = document.createElement('div');
+                    life.className = 'life lost';
+                    life.textContent = '❤️';
+                    livesMenDiv.appendChild(life);
+                }
+                
+                // Actualizar corazones para mujeres
+                livesWomenDiv.innerHTML = '';
+                for (let i = 0; i < vidasMujer; i++) {
+                    const life = document.createElement('div');
+                    life.className = 'life';
+                    life.textContent = '❤️';
+                    livesWomenDiv.appendChild(life);
+                }
+                for (let i = vidasMujer; i < 3; i++) {
+                    const life = document.createElement('div');
+                    life.className = 'life lost';
+                    life.textContent = '❤️';
+                    livesWomenDiv.appendChild(life);
+                }
+            };
+            
+            // Función para mostrar GIF de pérdida de vida
+            const showLoseLifeGif = (gender) => {
+                if (gender === "Hombre") {
+                    loseGifMen.style.display = 'block';
+                    setTimeout(() => {
+                        loseGifMen.style.display = 'none';
+                    }, 2500);
+                } else if (gender === "Mujer") {
+                    loseGifWomen.style.display = 'block';
+                    setTimeout(() => {
+                        loseGifWomen.style.display = 'none';
+                    }, 2500);
+                }
+            };
+            
+            // Función para mostrar derrota completa
+            const showDefeat = (team) => {
+                gameActive = false;
+                defeatTitle.textContent = `¡${team} Derrotado!`;
+                defeatMessage.textContent = "Lo siento, has perdido todas tus vidas";
+                
+                if (team === "Hombres") {
+                    defeatGif.src = "https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif";
+                } else {
+                    defeatGif.src = "https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif";
+                }
+                
+                defeatOverlay.classList.add('show');
             };
 
             const loadQuestion = () => {
@@ -1199,12 +1338,6 @@
                 winnerTeamDiv.textContent = `Equipo ${team}`;
                 winnerPointsSpan.textContent = points;
                 winnerBanner.classList.add('show');
-            };
-
-            const showLoser = (team) => {
-                gameActive = false;
-                loserTeamDiv.textContent = `Equipo ${team}`;
-                loserBanner.classList.add('show');
             };
 
             const animateCharacter = (character, animation) => {
@@ -1382,37 +1515,44 @@
                         resultDiv.textContent = "¡Correcto! Pero no se pudo determinar el equipo.";
                         resultDiv.style.color = '#e8eaed';
                     }
+                    
+                    updateScoresUI();
+                    
+                    // --- Comprobar victoria por puntos ---
+                    if (puntosHombre >= 5) {
+                        showWinner('Hombres', puntosHombre);
+                    } else if (puntosMujer >= 5) {
+                        showWinner('Mujeres', puntosMujer);
+                    } else {
+                        // Cargar siguiente pregunta tras un breve retraso
+                        setTimeout(loadQuestion, 3000);
+                    }
                 } else { // Incorrecto
+                    resultDiv.textContent = "¡Incorrecto! Inténtalo de nuevo.";
+                    resultDiv.style.color = '#e84676';
+                    
+                    // Reducir vida según el género detectado
                     if (gender === "Hombre") {
                         vidasHombre--;
+                        showLoseLifeGif("Hombre");
                         resultDiv.textContent = "¡Incorrecto! El equipo de Hombres pierde una vida.";
-                        resultDiv.style.color = '#e84676';
-                        // Animación para el personaje hombre
-                        animateCharacter(menCharacter, 'shake');
                     } else if (gender === "Mujer") {
                         vidasMujer--;
+                        showLoseLifeGif("Mujer");
                         resultDiv.textContent = "¡Incorrecto! El equipo de Mujeres pierde una vida.";
-                        resultDiv.style.color = '#e84676';
-                        // Animación para el personaje mujer
-                        animateCharacter(womenCharacter, 'shake');
-                    } else {
-                        resultDiv.textContent = "¡Incorrecto! No se pudo determinar el equipo.";
-                         resultDiv.style.color = '#e8eaed';
                     }
-                }
-                
-                updateScoresUI();
-                
-                // --- Comprobar condiciones de victoria/derrota ---
-                if (vidasHombre <= 0) {
-                    showLoser('Hombres');
-                    showWinner('Mujeres', puntosMujer);
-                } else if (vidasMujer <= 0) {
-                    showLoser('Mujeres');
-                    showWinner('Hombres', puntosHombre);
-                } else {
-                    // Cargar siguiente pregunta tras un breve retraso
-                    setTimeout(loadQuestion, 3000);
+                    
+                    updateLivesUI();
+                    
+                    // Comprobar si algún equipo se quedó sin vidas
+                    if (vidasHombre <= 0) {
+                        showDefeat("Hombres");
+                    } else if (vidasMujer <= 0) {
+                        showDefeat("Mujeres");
+                    } else {
+                        // Cargar siguiente pregunta tras un breve retraso
+                        setTimeout(loadQuestion, 3000);
+                    }
                 }
             };
 
@@ -1619,7 +1759,7 @@
             });
 
             restartBtn.addEventListener('click', initGame);
-            loserRestartBtn.addEventListener('click', initGame);
+            defeatRestartBtn.addEventListener('click', initGame);
             
             // Botón para iniciar el juego
             startGameBtn.addEventListener('click', () => {
